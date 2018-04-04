@@ -35,27 +35,19 @@ gulp.task("concat-css", function(){
 		.pipe(gulp.dest("dist/css"));
 });
 
-//编译scss
+//编译+压缩scss
 gulp.task("compile-scss", function(){
 	gulp.src("src/scss/*.scss")
 		.pipe(scss())
-		.pipe(gulp.dest("dist/scss"));
-});
-
-//编译+压缩+合并css
-gulp.task("ccc-scss", function(){
-	gulp.src("src/scss/*.scss")
-		.pipe(scss())					//编译scss
-		.pipe(cleanCss())				//合并css
-		.pipe(concat("all.min.css"))	//合并css
-		.pipe(gulp.dest("dist/scss"));
+		.pipe(cleanCss())				//压缩css
+		.pipe(gulp.dest("src/css"));	//输出到src/scss目录
 });
 
 //监控文件自动编译
 gulp.task("auto", function() {
 	gulp.watch("src/js/*.js", ["min-js","concat-js"]);
-	gulp.watch("src/css/*.css", ["min-css"]);
-	gulp.watch("src/scss/*.scss", ["ccc-scss"]);
+	gulp.watch("src/scss/*.scss", ["compile-scss"]);
+	gulp.watch("src/css/*.css", ["concat-css"]);
 });
 
 //自动刷新浏览器
