@@ -1,0 +1,17 @@
+{
+  "name": "webpack_demo2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "d": "webpack --config webpack.dev.config.js --progress --display-modules --colors --display-reasons"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "html-webpack-inline-source-plugin": "0.0.9",
+    "html-webpack-plugin": "^2.30.1",
+    "webpack": "^3.5.6"
+  }
+}

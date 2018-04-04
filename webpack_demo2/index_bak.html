@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <!--作者:ghostwu(吴华)-->
+    <meta charset="UTF-8">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <script src="<%= htmlWebpackPlugin.files.chunks.main.entry %>"></script>
+</head>
+<body>
+<!--自定义属性date-->
+<h3><%= htmlWebpackPlugin.options.date %></h3>
+<!--自定义属性userName-->
+<h3><%= htmlWebpackPlugin.options.userName %></h3>
+<!--自定义属性age-->
+<h3><%= htmlWebpackPlugin.options.age %></h3>
+<hr/>
+<ul>
+    <% for ( var key in htmlWebpackPlugin ){ %>
+        <% if ( key == 'files' ) { %>
+            <h3>files</h3>
+            <% for( var f in htmlWebpackPlugin[key] ){ %>
+                <li> <%= f %>, <%= htmlWebpackPlugin[key][f] %> </li>
+                <% if ( f == 'chunks') { %>
+                    <p><%= JSON.stringify( htmlWebpackPlugin[key][f] ) %></p>
+                <% } %>
+            <% } %>
+        <% } else { %>
+            <h3>options</h3>
+            <% for( var f in htmlWebpackPlugin[key] ){ %>
+                <li> <%= f %>, <%= htmlWebpackPlugin[key][f] %> </li>
+            <% } %>
+        <% } %>
+    <% } %>
+</ul>
+<script src="<%= htmlWebpackPlugin.files.chunks.calc.entry %>"></script>
+</body>
+</html>

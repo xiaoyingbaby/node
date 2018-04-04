@@ -1,0 +1,341 @@
+什么是loader呢，官方解释为文件的预处理器，通俗点说webpack在处理静态资源的时候，
+需要加载各种loader,比如，html文件，要用html-loader,
+css文件要用css-loader,style-loader等等.
+官方参考文档：https://webpack.js.org/loaders/
+
+webpack_demo3
+    dist
+    src
+        components
+            modal.html
+            modal.js
+            modal.less
+        main.js
+    index.html
+    package.json
+    webpack.config.js
+
+初始化项目：
+
+需要安装的插件等：
+1，npm init --yes( 初始化项目的package.json )
+2，npm install webpack@3.5.6 -g ( 全局安装webapck )
+3，npm install webpack@3.5.6 --save-dev (局部安装webpack )
+4，npm install html-webpack-plugin --save-dev ( 安装html-webpack-plugin插件 )
+
+
+webpack.config.js文件：
+var htmlWebpackPlugin = require('html-webpack-plugin');
+module.exports = {
+    entry : './src/main.js',
+    output : {
+        path : __dirname + '/dist',
+        filename : 'js/[name].bundle.js',
+    },
+    plugins : [
+        new htmlWebpackPlugin({
+            filename : 'index.html',
+            template : 'index.html',
+            inject : true
+        })
+    ]
+}
+
+main.js:
+import modal from './components/modal.js';
+let App = function(){
+    console.log( '项目入口文件main.js' );
+}
+new App();
+
+modal.html:
+<div class="modal">
+     <div class="modal-heading">模态框头部 - by ghostwu</div>
+     <div class="modal-body">模态框内容部分 - by ghostwu</div>
+</div>
+
+modal.js:
+let modal = function(){
+    return {
+        'component-name' : 'modal'
+    }
+}
+export default modal;
+
+modal.less:
+@c1 : #09f;
+@c2 : #666;
+.modal {
+    padding:20px;
+    div {
+        margin: 10px;
+    }
+}
+.modal-heading {
+    background:@c1;
+}
+.modal-body {
+    background:@c2;
+}
+
+
+---------------------------------------------------------------------------
+安装babel-loader，把es6转成es5
+
+官方参考文档：https://webpack.js.org/loaders/babel-loader/
+
+安装:  npm install --save-dev babel-loader babel-core babel-preset-env webpack
+
+添加bable-loader的配置：
+
+var htmlWebpackPlugin = require('html-webpack-plugin');
+let path = require('path');
+module.exports = {
+    entry: './src/main.js',
+    output: {
+        path: __dirname + '/dist',
+        filename: 'js/[name].bundle.js',
+    },
+    plugins: [
+        new htmlWebpackPlugin({
+            filename: 'index.html',
+            template: 'index.html',
+            inject: true
+        })
+    ],
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /(node_modules)/,
+                include: [
+                    path.resolve(__dirname, "src"),
+                ],
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['env']
+                    }
+                }
+            }
+        ]
+    }
+}
+
+rules就是配置规则，他是一个数组，每一项为一个对象，如果有多个loader,那就用多个对象，
+test: /\.js$/ 就是以.js结尾的文件，
+exclude:排除node_modules这个目录，意思就是不要去这个目录下处理.js的文件，有什么好处呢？
+大大提高打包的速度. include里面的配置意思就是把src目录下面的js文件作为处理的目标，
+use配置就是使用babel-loader
+
+
+二、使用css
+在src目录下新建一个css目录，在该目录下面新建一个css文件: style.css
+html,body{
+    margin: 0;
+    padding: 0;
+}
+body {
+    background: #08f;
+}
+ul,li {
+    list-style-type:none;
+}
+div {
+    transition: all ease 1s;
+}
+
+main.js中导入css文件
+
+import modal from './components/modal.js';
+import './css/style.css';
+let App = function(){
+    console.log( '项目入口文件main.js' );
+}
+new App();
+
+执行webpack打包命令会报错，提示需要一个loader，我们安装css-loader和style-loader
+安装命令: npm install css-loader style-loader --save-dev
+官方参考文档：https://webpack.js.org/loaders/css-loader/
+
+然后配置webpack.config.js:
+var htmlWebpackPlugin = require('html-webpack-plugin');
+let path = require('path');
+module.exports = {
+    entry: './src/main.js',
+    output: {
+        path: __dirname + '/dist',
+        filename: 'js/[name].bundle.js',
+    },
+    plugins: [
+        new htmlWebpackPlugin({
+            filename: 'index.html',
+            template: 'index.html',
+            inject: true
+        })
+    ],
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /(node_modules)/,
+                include: [
+                    path.resolve(__dirname, "src"),
+                ],
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['env']
+                    }
+                }
+            },
+            {
+                test: /\.css$/,
+                exclude: /(node_modules)/,
+                use: [
+                    'style-loader',
+                    'css-loader'
+                ]
+            }
+        ]
+    }
+}
+执行webpack打包， 你就能看到css被内嵌到文档中了, css-loader是处理css文件，style-loader是把css内嵌到浏览器
+
+-----------------------------------------------------------------------------------------------------
+自动补充css前缀:
+-ms-
+-moz-
+-webkit-
+-o-
+
+postcss-loader和autoprefixer插件
+
+安装postcss-loader: npm install postcss-loader --save-dev
+安装autoprefixer: npm install autoprefixer --save-dev
+
+
+项目目录下面 新建postcss.config.js
+module.exports = {
+    plugins : [
+        require('autoprefixer')({
+            browsers : ['last 5 versions']
+        })
+    ]
+}
+
+意思是在postcss-loader中引入autoprefixer插件
+
+{
+     test: /\.css$/,
+     exclude: /(node_modules)/,
+     use: [
+         'style-loader', {
+             loader : 'css-loader',
+             options : {
+                 importLoaders : 1
+             },
+         },
+         'postcss-loader'
+     ]
+}
+
+
+---------------------------------------------------------------------------
+less-loader
+
+modal.js中引入less文件，打包会报错，需要less-loader
+
+import './modal.less';
+let modal = function(){
+    return {
+        'component-name' : 'modal'
+    }
+}
+export default modal;
+
+安装: npm install --save-dev less-loader less
+
+配置webpack.config.js
+
+{
+     test: /\.less$/,
+     use: [
+         {
+             loader: "style-loader"
+         }, {
+             loader: "css-loader"
+         }, {
+             loader: "less-loader"
+         }
+     ]
+}
+当碰到less文件时，交给less-loader处理，然后交给css-loader处理，
+最后交由style-loader处理，然后执行webpack打包，
+modal.less文件中样式就被嵌入进来了
+
+---------------------------------------------------------------------------
+html-loader
+
+安装命令: npm install html-loader --save-dev
+
+modal.js文件引入modal.html
+import './modal.less';
+import tpl from './modal.html';
+let modal = function(){
+    return {
+        'component-name' : 'modal',
+        'tpl' : tpl
+    }
+}
+export default modal;
+
+main.js对webpack_demo3目录下的index.html文件插入模板(modal.html)
+
+import modal from './components/modal.js';
+import './css/style.css';
+let App = function(){
+    var oApp = document.querySelector("#app");
+    var oModal = new modal();
+    oApp.innerHTML = oModal.tpl;
+}
+new App();
+
+
+webpack_demo3目录下的index.html文件，需要添加个div, id为app
+
+html-loader的配置:
+{
+     test: /\.(html)$/,
+     use: {
+         loader: 'html-loader',
+     }
+ }
+---------------------------------------------------------------------------
+图片资源的打包，
+图片在静态排版中，
+经常出现的两个位置
+1，css通过background引入背景，
+2，还有一种就是在html模板文件中用img标签引入的方式，
+如果要在webpack使用图片资源，我们需要用file-loader来处理.
+
+安装file-loader: npm install file-loader --save-dev
+
+{
+     test: /\.(png|gif|jpg|svg|jpeg)$/i,
+     use: {
+         loader: 'file-loader',
+         query : {
+             name : 'assets/[hash].[ext]'
+         }
+     }
+}
+
+query部分的配置，是为打包的图片设置一个自定义的存储路径和文件名称
+注意：在模板中引入图片路径，
+如果是相对路径要这样引入${require(图片的相对路径)}，否则打包路径会出现问题
+
+<img src="${ require('../img/dm.jpg') }" alt="">
+
+
+

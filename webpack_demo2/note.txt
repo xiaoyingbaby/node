@@ -1,0 +1,363 @@
+开始通过webpack.config.js文件配置我们的webpack项目
+
+1,首先在项目文件夹demo2下面，新建一个webpack.config.js文件，
+这个webpack.config.js文件可以简化命令行操作，
+主要配置webpack的四大核心：entry(项目入口), output(输出路径) loaders(加载loader), and plugins(插件使用)，
+官网有详细配置说明：https://webpack.js.org/concepts/.
+那么什么是entry(入口)呢，就是项目运行时，第一个要被执行的文件，叫入口文件
+
+2,webpack.config.js
+
+module.exports = {
+    entry : './src/js/main.js', // 入口文件
+    output : {
+        //__dirname，就是当前webpack.config.js文件所在的绝对路径
+        path : __dirname + '/dist', //输出路径，要用绝对路径
+        filename : 'index.bundle.js' //打包之后输出的文件名
+    }
+};
+
+3, 配置文件写好之后，执行webpack打包命令，就会去当前目录下寻找webpack.config.js文件，
+把main.js文件 打包到dist/index.bundle.js，
+
+
+4，如果配置文件webpack.config.js被修改成别的名字(如webpack.dev.config.js)，
+执行webpack打包命令，是不能正常打包的(命令行会提示，找不到配置文件)，
+所以需要在打包的时候，
+通过--config指定配置文件的名字（webpack --config webpack.dev.config.js）才能正常打包
+
+5, 通过package.json文件的script部分，简化打包操作
+
+把package.json文件的scripts部分修改成：
+"scripts": {
+"d" : "webpack --config webpack.dev.config.js --progress --display-modules --colors --display-reasons"
+},
+然后在命令行下用 npm run d 这个快捷方式就可以执行scripts添加的"d"项对应的命令
+
+
+---------------------------------------------------------------------------------------------
+
+1，把两个文件打包成一个，用数组配置entry
+webpack.dev.config.js文件代码：
+
+module.exports = {
+    entry : ['./src/js/main.js', './src/js/calc.js'],
+    output : {
+        path : __dirname + '/dist', //输出路径，要用绝对路径
+        filename : 'index.bundle.js' //打包之后输出的文件名
+    }
+};
+
+2，src/js目录下面新建一个calc.js文件:
+ function add( n1, n2 ){
+     return n1 + n2;
+ }
+ alert( add( 10, 20 ) );
+
+
+3, 把两个文件分别打包成2个文件，entry采用字面量(json)方式配置
+
+module.exports = {
+    entry : {
+        main : './src/js/main.js',
+        calc : './src/js/calc.js'
+    },
+    output : {
+        path : __dirname + '/dist', //输出路径，要用绝对路径
+        filename : '[name].bundle.js' //打包之后输出的文件名
+    }
+};
+filename中的[name]是计算属性，这里的name就是main和calc
+
+4, filename可以用别的计算属性
+官网配置参考：https://webpack.js.org/configuration/output/#output-filename
+
+filename支持多种动态起名字的方式( id, name, hash, chunkhash, query )
+
+filename : '[id].bundle.js' :
+id就是模块的编号( 0, 1, .... )
+
+filename : '[chunkhash].bundle.js'
+
+[name]与[hash]组合使用
+filename : '[name]-[hash].bundle.js'
+
+
+---------------------------------------------------------------------------------------------
+插件html-webpack-plugin的使用
+安装命令: npm install html-webpack-plugin --save-dev
+
+官方参考文档：
+插件通用用法：https://webpack.js.org/configuration/plugins/#plugins
+html-webpack-plugin插件用法：https://webpack.js.org/plugins/html-webpack-plugin/
+html-webpack-plugin插件配置：https://github.com/jantimon/html-webpack-plugin#configuration
+
+webpack.dev.config.js引入插件
+
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+module.exports = {
+    entry : {
+        main : './src/js/main.js',
+        calc : './src/js/calc.js'
+    },
+    output : {
+        //__dirname，就是当前webpack.config.js文件所在的绝对路径
+        path : __dirname + '/dist', //输出路径，要用绝对路径
+        filename : '[name]-[hash].bundle.js' //打包之后输出的文件名
+    },
+    plugins: [new HtmlWebpackPlugin()]
+};
+
+打包之后在dist目录下面新生成index.html 动态引入生成后的打包文件
+
+2，生成的index.html跟webpack_demo2下面的index.html文件没有建立关联
+plugins: [new HtmlWebpackPlugin(
+         {
+             template : './index.html'
+         }
+)]
+生成的html文件 以 项目目录下的index.html为模板
+
+3，filename : 'js/[name]-[hash].bundle.js'
+添加js目录，管理生成的js文件
+
+4，插件的配置选项：inject与filename
+filename：打包生成的文件名，还可以加目录，默认没有写的时候是index.html
+inject：有4个值: true | 'head' | 'body' | false
+如果设置为head, 就是把js引入放在head标签里面, 如果设置为body，
+就是把js引入放在body里面， false: 不会引入js文件  true:引入js文件
+plugins: [new HtmlWebpackPlugin(
+     {
+        template : './index.html',
+         filename : 'index-[hash].html',
+         inject : 'head'
+     }
+ )]
+
+5,插件的选项：title
+title: 模板的标题
+plugins: [
+ new HtmlWebpackPlugin({
+     template : './index.html',
+     title : 'ghostwu教你学webpack',
+     inject : true
+ })
+]
+
+在项目目录下面的index.html文件中 用ejs模板语法 输出title
+<title><%= htmlWebpackPlugin.options.title %></title>
+注意是：htmlWebpackPlugin.options.title，不要把html的h大写
+
+
+---------------------------------------------------------------------------------------------
+
+1，html-webpack-plugin插件中的options除了自己定义了一些基本配置外，我们是可以任意的添加自定义的数据
+
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+plugins: [
+    new HtmlWebpackPlugin({
+        template : './index.html',
+        title : 'ghostwu教你学webpack',
+        inject : true,
+        date : new Date(),
+        userName : 'ghostwu',
+        age : 22
+    })
+]
+
+在模板中读取:
+ <h3><%= htmlWebpackPlugin.options.date %></h3>
+ <h3><%= htmlWebpackPlugin.options.userName %></h3>
+ <h3><%= htmlWebpackPlugin.options.age %></h3>
+
+2，完整的把htmlWebpackPlugin这个实例在模板中遍历出来
+
+<ul>
+    <% for ( var key in htmlWebpackPlugin ){ %>
+        <% if ( key == 'files' ) { %>
+            <h3>files</h3>
+            <% for( var f in htmlWebpackPlugin[key] ){ %>
+                <li> <%= f %>, <%= htmlWebpackPlugin[key][f] %> </li>
+                <% if ( f == 'chunks') { %>
+                    <p><%= JSON.stringify( htmlWebpackPlugin[key][f] ) %></p>
+                <% } %>
+            <% } %>
+        <% } else { %>
+            <h3>options</h3>
+            <% for( var f in htmlWebpackPlugin[key] ){ %>
+                <li> <%= f %>, <%= htmlWebpackPlugin[key][f] %> </li>
+            <% } %>
+        <% } %>
+    <% } %>
+</ul>
+
+3，通过上面打印的数据，我们可以自己手动指定js文件的引入，不需要自动inject
+
+new HtmlWebpackPlugin({
+     template : './index.html',
+     title : 'ghostwu教你学webpack',
+     inject : false
+ })
+
+inject设置为false, js不会自动注入到打包之后的文件dist/index.html，
+所以我们就要手动在模板中指定加载的js文件.
+
+<head>
+    <script src="<%= htmlWebpackPlugin.files.chunks.main.entry %>"></script>
+</head>
+<body>
+    <script src="<%= htmlWebpackPlugin.files.chunks.calc.entry %>"></script>
+</body>
+
+4，minify选项，压缩html文件
+他可以配置很多的值，
+官方参考地址：https://github.com/kangax/html-minifier#options-quick-reference
+new HtmlWebpackPlugin({
+     template : './index.html',
+     title : 'ghostwu教你学webpack',
+     inject : false,
+     minify : {
+         removeComments : true, //去掉注释
+         collapseWhitespace : true, //去掉空行
+     }
+ })
+
+---------------------------------------------------------------------------------------------
+1、chunks选项
+这个属性非常有用，可以指定某个页面加载哪些chunk( 可以简单的把他理解成js文件 )
+我们可以用他做多个页面模板的生成. 比如，我们在实际开发中，做一个博客网站，一般来说有首页，文章列表页，文章详情页等等，
+这些页面都有一个特点，都要引入一些公共的js文件以及该页面特有的js文件，比如：
+首页( index.html ) 引入  main.js, index.js
+文章列表页( list.html ) 引入  main.js, list.js
+文章详情页( detail.html ) 引入  main.js, detail.js
+传统方式，一个个的打开文件，拷贝修改，如果后期维护，
+又是一堆文件中，查找，拷贝，修改。很容易出错，
+而且效率低下，我们看下webpack是如何提高效率，开启前端工业化开发革命道路
+
+webpack.dev.config.js：
+
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+module.exports = {
+    entry : {
+        main : './src/js/main.js',
+        index : './src/js/index.js',
+        list : './src/js/list.js',
+        detail : './src/js/detail.js'
+    },
+    output : {
+        //__dirname，就是当前webpack.config.js文件所在的绝对路径
+        path : __dirname + '/dist', //输出路径，要用绝对路径
+        filename : 'js/[name]-[hash].bundle.js', //打包之后输出的文件名
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template : './index.html',
+            title : '博客首页-by ghostwu',
+            filename : 'index.html',
+            inject : true,
+            chunks : ['main', 'index']
+        }),
+        new HtmlWebpackPlugin({
+            template : './index.html',
+            title : '列表页-by ghostwu',
+            filename : 'list.html',
+            inject : true,
+            chunks : ['main', 'list']
+        }),
+        new HtmlWebpackPlugin({
+            template : './index.html',
+            title : '文章详情页-by ghostwu',
+            filename : 'detail.html',
+            inject : true,
+            chunks : ['main', 'detail']
+        })
+    ]
+};
+
+
+2、excludeChunks选项
+这个很好理解，就是有很多chunks，排除不要加载的
+
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+module.exports = {
+    entry : {
+        main : './src/js/main.js',
+        index : './src/js/index.js',
+        list : './src/js/list.js',
+        detail : './src/js/detail.js'
+    },
+    output : {
+        path : __dirname + '/dist', //输出路径，要用绝对路径
+        filename : 'js/[name]-[hash].bundle.js', //打包之后输出的文件名
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template : './index.html',
+            title : '博客首页-by ghostwu',
+            filename : 'index.html',
+            inject : true,
+            excludeChunks : ['list','detail']
+        }),
+        new HtmlWebpackPlugin({
+            template : './index.html',
+            title : '列表页-by ghostwu',
+            filename : 'list.html',
+            inject : true,
+            excludeChunks : ['index','detail']
+        }),
+        new HtmlWebpackPlugin({
+            template : './index.html',
+            title : '文章详情页-by ghostwu',
+            filename : 'detail.html',
+            inject : true,
+            excludeChunks : ['list','index']
+        })
+    ]
+};
+
+3，把页面src引入文件的方式，改成用script标签嵌入的方式，减少http请求( 提高加载性能）
+要达到这个目的，我们再安装一个插件html-webpack-inline-source-plugin
+安装：npm install --save-dev html-webpack-inline-source-plugin
+
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
+module.exports = {
+    entry : {
+        main : './src/js/main.js',
+        index : './src/js/index.js',
+        list : './src/js/list.js',
+        detail : './src/js/detail.js'
+    },
+    output : {
+        path : __dirname + '/dist', //输出路径，要用绝对路径
+        filename : 'js/[name]-[hash].bundle.js', //打包之后输出的文件名
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template : './index.html',
+            title : '博客首页-by ghostwu',
+            filename : 'index.html',
+            inject : true,
+            excludeChunks : ['list','detail'],
+            inlineSource : '.(js|css)$' //全部内嵌
+        }),
+        new HtmlWebpackInlineSourcePlugin(),
+        new HtmlWebpackPlugin({
+            template : './index.html',
+            title : '列表页-by ghostwu',
+            filename : 'list.html',
+            inject : true,
+            excludeChunks : ['index','detail']
+        }),
+        new HtmlWebpackPlugin({
+            template : './index.html',
+            title : '文章详情页-by ghostwu',
+            filename : 'detail.html',
+            inject : true,
+            excludeChunks : ['list','index']
+        })
+    ]
+};
+
+
+

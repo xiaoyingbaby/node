@@ -1,0 +1,51 @@
+Webpack是前端一个工具,可以让各个模块进行加载,预处理,再进行打包。
+现代的前端开发很多环境都依赖webpack构建，比如vue官方就推荐使用webpack
+
+一、安装webpack
+使用npm init --yes 初始化项目的package.json文件，
+然后执行npm install webpack --save-dev
+
+二、全局安装webpack(3.5.6版本):
+npm install webpack@3.5.6 -g
+安装完成之后用webpack -v 查看webpack的版本
+
+三、新建一个index.js文件，输入一个函数，弹出一些信息，然后调用函数，
+最后用webpack 打包( webpack index.js index.bundle.js )：
+把index.js文件打包成index.bundle.js
+
+四、新建一个index.html文件，然后引入index.bundle.js 就能使用这个js文件了
+
+五、把两个js文件一起打包合并
+另外在当前目录下面新建一个calc.js文件，然后在用module.exports导出
+
+--------------------------loader的用法-----------------------------
+loaders 用于转换应用程序的资源文件，他们是运行在nodejs下的函数
+
+1，新建style.css文件，然后用require引入index.js文件中， 执行一次打包(webpack index.js index.bundle.js)，
+这个时候会报错，报错信息显示为（你需要loader去处理css文件）
+2，我们需要安装两个loader，css-loader,style-loader(   安装命令: npm install css-loader style-loader --save-dev )
+再用require加载
+
+require( 'style-loader!css-loader!./style.css' );
+3，
+webpack打包，后面可以跟很多参数，如:
+--progress: 打包进度
+--display-modules: 打包的模块
+--colors: 是否彩色显示 打包提示信息
+--display-reasons: 打包原因
+--watch: 自动监控文件变化
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
