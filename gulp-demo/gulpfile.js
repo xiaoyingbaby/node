@@ -3,6 +3,7 @@ var uglify = require("gulp-uglify");
 var concat = require("gulp-concat");
 var cleanCss = require("gulp-clean-css");
 var scss = require("gulp-scss");
+var browserSync = require("browser-sync");
 
 //压缩js
 gulp.task("min-js", function(){
@@ -56,6 +57,21 @@ gulp.task("auto", function() {
 	gulp.watch("src/css/*.css", ["min-css"]);
 	gulp.watch("src/scss/*.scss", ["ccc-scss"]);
 });
-gulp.task("default", ["auto"]);
+
+//自动刷新浏览器
+gulp.task("browser-sync",function(){
+    browserSync.init({
+    	files:["**"],
+        server:{
+            baseDir: './'//,  // 设置服务器的根目录
+            //index:'dist/test.html' // 指定默认打开的文件
+        },
+        port:8080  // 指定访问服务器的端口号
+    });
+});
+
+
+//默认组合任务
+gulp.task("default", ["auto","browser-sync"]);
 
 

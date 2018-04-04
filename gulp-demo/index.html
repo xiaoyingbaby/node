@@ -1,27 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-    <!--<script src="./dist/js/lib.js"></script>-->
-    <!--<script src="./dist/js/jquery.js"></script>-->
-    <!--<script>-->
-        <!--$(function(){-->
-           <!--$("input").click(function(){-->
-               <!--alert( 'ghostwu' );-->
-           <!--});-->
-        <!--});-->
-    <!--</script>-->
-    <script src="./dist/js/all.min.js"></script>
-    <script>
-        window.onload = function(){
-            $("btn").onclick = function(){
-                alert( Oper.mod( 20, 11 ) );
-            }
-        }
-    </script>
+<meta charset="UTF-8">
+<title></title>
+<link rel="stylesheet" type="text/css" href="dist/css/style.css" />
 </head>
+
 <body>
-<input type="button" value="测试" id="btn"/>
+<p style="padding:30px;">
+	<input type="button" value="测试" id="btn" />
+</p>
+
+
+<script src="./dist/js/all.min.js"></script>
+<script>
+	window.onload = function() {
+		$("btn").onclick = function() {
+			alert(Oper.test(20, 11));
+		}
+	}
+</script>
 </body>
 </html>
