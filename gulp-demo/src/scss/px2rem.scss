@@ -1,0 +1,12 @@
+$designSize: 75;
+
+@function px2rem($px){
+    @return $px / $designSize * 1rem;
+}
+
+.test{
+    width:10px;
+    height: px2rem(75);
+    top: px2rem(100);
+    left: px2rem(200);
+}
