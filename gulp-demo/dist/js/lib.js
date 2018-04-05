@@ -1,1 +1,0 @@
-var Oper={add:function(n,r){return n+r},sbb:function(n,r){return n-r},mul:function(n,r){return n*r},div:function(n,r){return n/r},mod:function(n,r){return n%r},test:function(n,r){return n*r*2}};

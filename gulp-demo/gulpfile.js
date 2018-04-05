@@ -2,7 +2,7 @@ var gulp = require("gulp");
 var uglify = require("gulp-uglify");
 var concat = require("gulp-concat");
 var cleanCss = require("gulp-clean-css");
-var scss = require("gulp-scss");
+var scss = require("gulp-sass");
 var browserSync = require("browser-sync");
 
 //压缩js
