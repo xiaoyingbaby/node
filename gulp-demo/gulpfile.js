@@ -39,13 +39,13 @@ gulp.task("concat-css", function(){
 gulp.task("compile-scss", function(){
 	gulp.src("src/scss/*.scss")
 		.pipe(scss())
-		.pipe(cleanCss())				//压缩css
+		//.pipe(cleanCss())				//压缩css
 		.pipe(gulp.dest("src/css"));	//输出到src/scss目录
 });
 
 //监控文件自动编译
 gulp.task("auto", function() {
-	gulp.watch("src/js/*.js", ["min-js","concat-js"]);
+	gulp.watch("src/js/*.js", ["concat-js"]);
 	gulp.watch("src/scss/*.scss", ["compile-scss"]);
 	gulp.watch("src/css/*.css", ["concat-css"]);
 });

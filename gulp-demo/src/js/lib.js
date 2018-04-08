@@ -1,6 +1,3 @@
-/**
- * Created by ghostwu(�⻪).
- */
 var Oper = {
     add : function( n1, n2 ){
         return n1 + n2;
@@ -16,8 +13,5 @@ var Oper = {
     },
     mod : function( n1, n2){
     	return n1 % n2;
-    },
-    test: function(n1,n2){
-    	return n1 * n2 *2;
     }
 }
