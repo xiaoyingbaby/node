@@ -22,13 +22,13 @@ gulp.task('min-js', function(){
 gulp.task('sprite',function(){
     return gulp.src('./src/img/icon/*')
         .pipe($.spritesmith({
-            imgName:'img/sprite.png',   //保存合并后图片的地址
-            cssName:'css/_____sprite.temp.css',   //保存合并后对于css样式的地址
+            imgName:'dist/img/sprite.png',   //保存合并后图片的地址
+            cssName:'src/css/_____sprite.temp.css',   //保存合并后对于css样式的地址
             padding:2,					//每个图片之间的间距，默认为0
             algorithm:'top-down',	//如何排布合并图片，默认“binary-tree” 可选参数有：top-down、left-right、diagonal、alt-diagonal、binary-tree
             cssTemplate:"./src/sprite/temp.css"
         }))
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest('./'));
 })
 
 //任务4：编译scss
@@ -36,12 +36,12 @@ gulp.task('compile-scss', function(){
 	return gulp.src('./src/scss/*.scss')
 		.pipe($.sass())
 		.pipe($.concat('_____compile.temp.css'))
-		.pipe(gulp.dest('./dist/css'));
+		.pipe(gulp.dest('./src/css'));
 });
 
 //任务5：合并+压缩css，并删除零时生成的scss
 gulp.task('min-css', function(){
-	return gulp.src(['./src/css/*.css', './dist/css/*.temp.css'])
+	return gulp.src('./src/css/*.css')
 		.pipe($.concat('all.min.css'))
 		.pipe($.csso())
 		.pipe(gulp.dest('./dist/css'));
