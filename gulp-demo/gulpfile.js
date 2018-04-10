@@ -83,13 +83,13 @@ gulp.task('concat-js', function(){
 gulp.task('sprite',function(){
     return gulp.src('./src/img/icon/*')
         .pipe(spritesmith({
-            imgName:'img/sprite.png',   //保存合并后图片的地址
-            cssName:'css/_____sprite.temp.css',   //保存合并后对于css样式的地址
+            imgName:'dist/img/sprite.png',   //保存合并后图片的地址
+            cssName:'src/css/_____sprite.temp.css',   //保存合并后对于css样式的地址
             padding:2,					//每个图片之间的间距，默认为0
             algorithm:'top-down',	//如何排布合并图片，默认“binary-tree” 可选参数有：top-down、left-right、diagonal、alt-diagonal、binary-tree
             cssTemplate:"./src/sprite/temp.css"
         }))
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest('./'));
 })
 
 //css添加前缀
