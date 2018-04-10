@@ -9,6 +9,7 @@ var csso = require('gulp-csso');
 var scss = require('gulp-sass');
 var browserSync = require('browser-sync');
 var autoprefixer = require('gulp-autoprefixer');
+var spritesmith = require('gulp.spritesmith');
 var imgMin = require('gulp-imagemin');	//cnpm安装有问题，请用npm
 /******************** 方法1 End ********************/
 
@@ -77,6 +78,19 @@ gulp.task('concat-js', function(){
 		.pipe(uglify())
 		.pipe(gulp.dest('dist/js'));
 });
+
+//制作雪碧图、生成css
+gulp.task('sprite',function(){
+    return gulp.src('./src/img/icon/*')
+        .pipe(spritesmith({
+            imgName:'img/sprite.png',   //保存合并后图片的地址
+            cssName:'css/_____sprite.temp.css',   //保存合并后对于css样式的地址
+            padding:2,					//每个图片之间的间距，默认为0
+            algorithm:'top-down',	//如何排布合并图片，默认“binary-tree” 可选参数有：top-down、left-right、diagonal、alt-diagonal、binary-tree
+            cssTemplate:"./src/sprite/temp.css"
+        }))
+        .pipe(gulp.dest('./dist'));
+})
 
 //css添加前缀
 gulp.task('pre-css', function(){
