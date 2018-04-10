@@ -79,7 +79,7 @@ gulp.task('browser-sync', function(){
 gulp.task('default', function(cb) {
     runSequence(
         'clean', 	//第一步：清理目标目录
-        'sprite',	//第二步：生成雪碧图
+        'sprite',	//第二步：生成雪碧图------------watch无法监控文件新增删除，所以添加图片和删除图片的时候，手动生成gulp sprite
         'compile-scss',		//第三部：编译scss
         ['min-js', 'min-css', 'min-html'], //第四步：压缩三大文件
         'watch', // 第五步：监控
