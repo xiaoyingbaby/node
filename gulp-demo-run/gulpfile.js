@@ -19,7 +19,7 @@ gulp.task('min-js', function(){
 });
 
 //任务3：制作雪碧图、生成css
-gulp.task('sprite-css',function(){
+gulp.task('sprite',function(){
     return gulp.src('./src/img/icon/*')
         .pipe($.spritesmith({
             imgName:'img/sprite.png',   //保存合并后图片的地址
@@ -29,13 +29,6 @@ gulp.task('sprite-css',function(){
             cssTemplate:"./src/template/cssTemplate.css"
         }))
         .pipe(gulp.dest('./src'));
-});
-gulp.task('sprite-copy', function(){
-	return gulp.src('./src/img/sprite.png')
-		.pipe(gulp.dest('./dist/img'));
-});
-gulp.task('sprite', function() {
-    runSequence('sprite-css', 'sprite-copy');
 });
 
 //任务4：编译scss
@@ -65,7 +58,6 @@ gulp.task('min-html', function(){
 gulp.task('images', function() { 
   return gulp.src(['./src/img/**/*.{jpg,png,gif,ico,svg}', '!./src/img/icon/*'])
     .pipe($.cache($.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
-    //.pipe($.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
     .pipe(gulp.dest('./dist/img'))
 });
 
