@@ -63,8 +63,9 @@ gulp.task('min-html', function(){
 
 //任务7：复制图片
 gulp.task('images', function() { 
-  return gulp.src('src/img/**/*')
+  return gulp.src(['./src/img/**/*.{jpg,png,gif,ico,svg}', '!./src/img/icon/*'])
     .pipe($.cache($.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
+    //.pipe($.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
     .pipe(gulp.dest('./dist/img'))
 });
 
@@ -97,7 +98,7 @@ gulp.task('default', function(cb) {
         'clean', 	//第一步：清理目标目录
         'sprite',	//第二步：生成雪碧图
         'compile-scss',		//第三部：编译scss
-        ['min-js', 'min-css', 'min-html'], //第四步：压缩三大文件
+        ['min-js', 'min-css', 'min-html', 'images'], //第四步：压缩三大文件+复制图片
         'watch', // 第五步：监控
         'browser-sync',		//第六步：刷新浏览器
         cb
