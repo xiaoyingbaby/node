@@ -20,14 +20,14 @@ img {
 }
 #btn{
 	width: 100px;
-	height: 40px;
+	height: 30px;
 	background-color: #e6e6e6;
 	border: 1px solid #333;
 	cursor: pointer;
-	outline: none;
 }
 #btn:hover{
 	background: #eee;
 	border: 1px solid #666;
 }
+
 

@@ -11,12 +11,21 @@
 	<input type="button" value="测试" id="btn" />
 </p>
 
+<p style="padding:30px;">
+	<a href="#" class="icon-img icon-ctb" id="test"></a>
+</p>
 
 <script src="./js/all.min.js"></script>
 <script>
 window.onload = function() {
-	$("btn").onclick = function() {
+	$('btn').onclick = function() {
 		alert(cacl.add(20, 30));
+	};
+	$('test').onclick = function() {
+		this.className = 'icon-img icon-ctb active';
+		setTimeout(function(){
+			$('test').className = 'icon-img icon-ctb';
+		},200);
 	}
 }
 </script>

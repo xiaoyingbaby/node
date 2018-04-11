@@ -19,17 +19,24 @@ gulp.task('min-js', function(){
 });
 
 //任务3：制作雪碧图、生成css
-gulp.task('sprite',function(){
+gulp.task('sprite-css',function(){
     return gulp.src('./src/img/icon/*')
         .pipe($.spritesmith({
-            imgName:'dist/img/sprite.png',   //保存合并后图片的地址
-            cssName:'src/css/_____sprite.temp.css',   //保存合并后对于css样式的地址
+            imgName:'img/sprite.png',   //保存合并后图片的地址
+            cssName:'css/_____sprite.temp.css',   //保存合并后对于css样式的地址
             padding:2,					//每个图片之间的间距，默认为0
             algorithm:'top-down',	//如何排布合并图片，默认“binary-tree” 可选参数有：top-down、left-right、diagonal、alt-diagonal、binary-tree
-            cssTemplate:"./src/sprite/temp.css"
+            cssTemplate:"./src/template/cssTemplate.css"
         }))
-        .pipe(gulp.dest('./'));
-})
+        .pipe(gulp.dest('./src'));
+});
+gulp.task('sprite-copy', function(){
+	return gulp.src('./src/img/sprite.png')
+		.pipe(gulp.dest('./dist/img'));
+});
+gulp.task('sprite', function() {
+    runSequence('sprite-css', 'sprite-copy');
+});
 
 //任务4：编译scss
 gulp.task('compile-scss', function(){
@@ -54,15 +61,24 @@ gulp.task('min-html', function(){
 		.pipe(gulp.dest('./dist/html'));
 });
 
-//任务7：监控文件，若有变化自动执行任务
-gulp.task('watch', function() {
-	gulp.watch('./src/js/*.js', ['min-js']);
-	gulp.watch('./src/scss/*.scss', ['compile-scss','min-css']);
-	gulp.watch('./src/css/*.css', ['min-css']);
-	gulp.watch('./src/html/*.html', ['min-html']);
+//任务7：复制图片
+gulp.task('images', function() { 
+  return gulp.src('src/img/**/*')
+    .pipe($.cache($.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
+    .pipe(gulp.dest('./dist/img'))
 });
 
-//任务8：文件变化，自动刷新浏览器
+//任务8：监控文件，若有变化自动执行任务
+gulp.task('watch', function() {
+	gulp.watch('src/js/*.js', ['min-js']);
+	gulp.watch('src/scss/*.scss', ['compile-scss','min-css']);
+	gulp.watch('src/img/icon/*.png', ['sprite','min-css']);
+	gulp.watch('src/css/*.css', ['min-css']);
+	gulp.watch('src/html/*.html', ['min-html']);
+	gulp.watch('src/img/**/*', ['images']);
+});
+
+//任务9：文件变化，自动刷新浏览器
 gulp.task('browser-sync', function(){
     browserSync.init({
     	files:['**'],
@@ -74,12 +90,12 @@ gulp.task('browser-sync', function(){
     });
 });
 
-//任务9：同步执行/队列执行
+//任务10：同步执行/队列执行
 //gulp任务是异步的，task写法上可以省略return，但在需要同步执行任务时，这个return是不能省略的。具体看任务1-6
 gulp.task('default', function(cb) {
     runSequence(
         'clean', 	//第一步：清理目标目录
-        'sprite',	//第二步：生成雪碧图------------watch无法监控文件新增删除，所以添加图片和删除图片的时候，手动生成gulp sprite
+        'sprite',	//第二步：生成雪碧图
         'compile-scss',		//第三部：编译scss
         ['min-js', 'min-css', 'min-html'], //第四步：压缩三大文件
         'watch', // 第五步：监控

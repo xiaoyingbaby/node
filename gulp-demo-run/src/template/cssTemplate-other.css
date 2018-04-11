@@ -1,5 +1,6 @@
 .icon-img:before{
 	display: inline-block;
+	background-repeat: no-repeat;
 }
 {{#sprites}}
 .icon-{{name}}:before {
@@ -8,4 +9,4 @@
       width: {{px.width}};
       height: {{px.height}};
     }
-{{/sprites}} 
+{{/sprites}}

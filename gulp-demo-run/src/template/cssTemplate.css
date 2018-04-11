@@ -1,0 +1,16 @@
+/*因为文件名不能使用英文符号:，所有只能生产.active，如果需要双态，再生成的_____sprite.temp.css里将.active改成:acitve*/
+{{#block "sprites"}}
+.icon-img:before{
+	display: inline-block;
+	content: " ";
+	background-image: url({{spritesheet.escaped_image}});
+	background-repeat: no-repeat;
+}
+{{#sprites}}
+.icon-{{name}}:before {
+	width: {{px.width}};
+	height: {{px.height}};
+	background-position: {{px.offset_x}} {{px.offset_y}};
+}
+{{/sprites}}
+{{/block}}
