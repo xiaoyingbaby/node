@@ -72,7 +72,7 @@
  */
 
 function say(){
-    alert( 'ghostwu' );
+    alert( 'ghostwu1111111' );
 }
 say();
 
@@ -132,8 +132,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!./node_modules/css-loader/index.js!./style.css", function() {
-			var newContent = require("!!./node_modules/css-loader/index.js!./style.css");
+		module.hot.accept("!!./node_modules/_css-loader@0.28.11@css-loader/index.js!./style.css", function() {
+			var newContent = require("!!./node_modules/_css-loader@0.28.11@css-loader/index.js!./style.css");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -146,12 +146,12 @@ if(false) {
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)(undefined);
+exports = module.exports = __webpack_require__(4)(false);
 // imports
 
 
 // module
-exports.push([module.i, "* {\r\n    margin:0;\r\n    padding:0;\r\n}\r\nbody {\r\n    background:red;\r\n}\r\n\r\n\r\n\r\n\r\n\r\n", ""]);
+exports.push([module.i, "* {\r\n    margin:0;\r\n    padding:0;\r\n}\r\nbody {\r\n    background:#fff;\r\n}\r\n\r\n\r\n\r\n\r\n\r\n", ""]);
 
 // exports
 
@@ -308,7 +308,7 @@ module.exports = function(list, options) {
 
 	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
 	// tags it will allow on a page
-	if (!options.singleton) options.singleton = isOldIE();
+	if (!options.singleton && typeof options.singleton !== "boolean") options.singleton = isOldIE();
 
 	// By default, add <style> tags to the <head> element
 	if (!options.insertInto) options.insertInto = "head";

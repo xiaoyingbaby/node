@@ -3,7 +3,7 @@
  */
 
 function say(){
-    alert( 'ghostwu' );
+    alert( 'ghostwu1111111' );
 }
 say();
 
