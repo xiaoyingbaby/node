@@ -1,13 +1,13 @@
 const webpack = require("webpack");
 const path = require("path");
-
+const copyWebpackPlugin = require('copy-webpack-plugin')	//复制静态文件
 
 module.exports = {
 	devtool: "eval-source-map",
 	context: path.resolve(__dirname, "../"), //基础目录
 	entry: {
-		//"/js/main": "./src/js/main.js" //入口文件
-		main: "./src/js/main.js" //入口文件
+		"js/main": "./src/js/main.js" //入口文件
+		//main: "./src/js/main.js" //入口文件
 	},
 	output: {
 		path: path.resolve(__dirname, "../dist"), //打包后的文件存放的地方
@@ -22,5 +22,12 @@ module.exports = {
 		historyApiFallback: true, //不跳转
 		inline: true //实时刷新
 		//hot: true	//热加载
-	}
+	},
+	plugins: [
+		new copyWebpackPlugin([{
+			from: path.resolve(__dirname, '../static'),
+			to: path.resolve(__dirname, '../dist'),
+			ignore: ['.*']
+		}])
+	]
 }
