@@ -1,6 +1,6 @@
 const webpack = require("webpack");
 const path = require("path");
-const CopyWebpackPlugin = require('copy-webpack-plugin')	//复制静态文件
+const CopyWebpackPlugin = require("copy-webpack-plugin")	//复制静态文件
 
 module.exports = {
 	devtool: "eval-source-map",
@@ -24,9 +24,9 @@ module.exports = {
 	},
 	plugins: [
 		new CopyWebpackPlugin([{
-			from: path.resolve(__dirname, '../static'),//复制来源
-			to: path.resolve(__dirname, '../dist'),//复制到哪
-			ignore: ['.*']
+			from: path.resolve(__dirname, "../static"),//复制来源
+			to: path.resolve(__dirname, "../dist"),//复制到哪
+			ignore: [".*"]
 		}])
 	]
 }
