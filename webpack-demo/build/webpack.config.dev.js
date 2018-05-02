@@ -3,7 +3,7 @@ const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin")	//复制静态文件
 
 module.exports = {
-	devtool: "eval-source-map",
+	devtool: "eval-source-map",	//生成Source Maps（使调试更容易）
 	context: path.resolve(__dirname, "../"), //基础目录
 	entry: {
 		"js/main": "./src/js/main.js" //入口文件，指向output.filename中的[name]，可以是单文件名，也可以是路径
@@ -16,11 +16,16 @@ module.exports = {
 	devServer: {
 		host: "192.168.0.95", //主机名
 		port: 9000, //端口号
-		contentBase: "./", //本地服务器所加载的页面所在的目录
+		//contentBase: "./", //本地服务器所加载的页面所在的目录
 		//openPage: "index.html", //首页
 		historyApiFallback: true, //不跳转
 		inline: true //实时刷新
 		//hot: true	//热加载
+	},
+	module: {
+		rules: [
+			{test: /\.css$/,use: ['style-loader', 'css-loader']}
+		]
 	},
 	plugins: [
 		new CopyWebpackPlugin([{

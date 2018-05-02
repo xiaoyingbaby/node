@@ -3,7 +3,6 @@ const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin")	//复制静态文件
 
 module.exports = {
-	devtool: "eval-source-map",
 	context: path.resolve(__dirname, "../"), //基础目录
 	entry: {
 		"js/main": "./src/js/main.js" //入口文件，指向output.filename中的[name]，可以是单文件名，也可以是路径

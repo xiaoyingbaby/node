@@ -1,4 +1,4 @@
-/*因为文件名不能使用英文符号:，所有只能生产.active，如果需要双态，再生成的_____sprite.temp.css里将.active改成:acitve*/
+/*因为文件名不能使用英文符号:，所有只能生产.active，如果需要双态，在生成的_____sprite.temp.css里将.active改成:acitve*/
 {{#block "sprites"}}
 .icon-img:before{
 	display: inline-block;
